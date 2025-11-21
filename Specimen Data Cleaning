@@ -1,0 +1,83 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Specimen Referral Data Cleaning\n",
+    "Cleaning and exploring anonymized specimen tracking data (NACA/NIPOST pilot style)\n",
+    "\n",
+    "Khadijah Abubakar | November 2025"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "from datetime import datetime, timedelta"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Sample dataset (in real project this would be 60,000+ rows)\n",
+    "data = {\n",
+    "    'specimen_id': ['SP001', 'SP002', 'SP003', 'SP004', 'SP005'],\n",
+    "    'collection_date': ['2025-01-15', '2025-01-16', '2025-01-17', '', '2025-01-19'],\n",
+    "    'facility': ['Kaduna General', 'Lafia Clinic', 'Abuja Lab', 'Port Harcourt', 'Kano Centre'],\n",
+    "    'status': ['Collected', 'In Transit', 'Received', 'Collected', 'Delayed'],\n",
+    "    'turnaround_days': [5, 3, None, 7, 12]\n",
+    "}\n",
+    "\n",
+    "df = pd.DataFrame(data)\n",
+    "df"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Clean the data\n",
+    "df['collection_date'] = pd.to_datetime(df['collection_date'], errors='coerce')\n",
+    "df['status'] = df['status'].str.strip().str.title()\n",
+    "df['turnaround_days'] = pd.to_numeric(df['turnaround_days'], errors='coerce')\n",
+    "\n",
+    "print(\"Cleaned dataset:\")\n",
+    "df"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Summary statistics\n",
+    "print(f\"Average turnaround: {df['turnaround_days'].mean():.1f} days\")\n",
+    "print(f\"Delayed specimens: {len(df[df['turnaround_days'] > 7])} out of {len(df)}")"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "name": "python",
+   "version": "3.11"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
